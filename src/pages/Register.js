@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import "./Register.css"; // Import your CSS file
 import axios from "axios";
+import { useApi } from './ApiContext';
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -14,7 +15,7 @@ const Register = () => {
   });
 
   const { username, email, password, confirmPassword } = formData;
-
+  const baseUrl = useApi();
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -23,7 +24,7 @@ const Register = () => {
     e.preventDefault();
     // Add your registration logic here
     try {
-        axios.post('http://localhost:5000/register', { username, email, password });
+        axios.post(`${baseUrl}/register`, { username, email, password });
         console.log('User registered successfully');
     } catch (error) {
         console.error('Error registering user:', error);

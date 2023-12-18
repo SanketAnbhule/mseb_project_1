@@ -7,12 +7,13 @@ import MaterialTable from "material-table";
 import { Typography, Card, CardContent, Grid, Select,MenuItem,TextField,FormControl,InputLabel, Alert} from "@mui/material";
 import { useParams } from 'react-router-dom';
 import { ThemeProvider, createTheme } from '@mui/material';
+import { useApi } from './ApiContext';
 
 
  
 export default function Updatedata() {
   const defaultMaterialTheme = createTheme();
-
+  const baseUrl = useApi();
   // const [data2, setTableData] = useState([
   //   { zonename: 'Zl', kWh: '98890', MD_kW: '', kVAH: '142602', kVA_MD: '45.7', RkVAH: '', pf: '', anamoly: '' },
   // ]);
@@ -49,7 +50,7 @@ export default function Updatedata() {
     const { id } =useParams();
     useEffect(()=>{
         axios
-        .get(`http://localhost:5000/api/get/${id}`)
+        .get(`${baseUrl}/api/get/${id}`)
         .then((resp) => {
             const initialData = resp.data[0];
             setState({
@@ -117,7 +118,7 @@ export default function Updatedata() {
       })
             
         
-    },[id]);
+    },[baseUrl,id]);
     
    const [data2,setData2]=useState([]);
    const [data3,setData3]=useState([]);
@@ -125,7 +126,7 @@ export default function Updatedata() {
      //const { MainID } =useParams();
     useEffect(()=>{
       axios
-      .get(`http://localhost:5000/api/get/meterR/${id}`)
+      .get(`${baseUrl}/api/get/meterR/${id}`)
       .then((resp)=>
       setData2(resp.data))
           
@@ -135,10 +136,10 @@ export default function Updatedata() {
 
           
       
-  },[id]);
+  },[baseUrl,id]);
   useEffect(()=>{
     axios
-    .get(`http://localhost:5000/api/get/tableTwo/${id}`)
+    .get(`${baseUrl}/get/tableTwo/${id}`)
     .then((resp)=>
     setData3(resp.data))
         
@@ -148,11 +149,11 @@ export default function Updatedata() {
 
         
     
-},[id]);
+},[baseUrl,id]);
 
 useEffect(()=>{
   axios
-  .get(`http://localhost:5000/api/get/tableThree/${id}`)
+  .get(`${baseUrl}/api/get/tableThree/${id}`)
   .then((resp)=>
   setData4(resp.data))
       
@@ -162,7 +163,7 @@ useEffect(()=>{
 
       
   
-},[id]);
+},[baseUrl,id]);
 const [state, setState] = useState({
       serialNumber  :"",
     

@@ -3,14 +3,15 @@ import {Chart as ChartJS} from 'chart.js/auto';
 import {Bar,Doughnut,Line} from 'react-chartjs-2';
 import axios from 'axios';
 import './bar.css';
+import { useApi } from './ApiContext';
 
 const PieChart = () => {
   const [sourceData, setSourceData] = useState([]);
-
+  const baseUrl = useApi();
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/api/data');
+        const response = await axios.get(`${baseUrl}/api/data`);
         setSourceData( response.data);
         console.log(response.data);
 
@@ -20,7 +21,7 @@ const PieChart = () => {
     };
 
     fetchData();
-  }, []);
+  }, [baseUrl]);
 
   return (
     <div className="Aqwe" style={{backgroundColor:"black"}}>

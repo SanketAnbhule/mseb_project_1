@@ -61,6 +61,8 @@ import ThreePhase from "./pages/ThreePhase";
 import OnePhase from "./pages/OnePhase";
 import Ht from "./pages/Ht";
 import PieChart from "./pages/PieChart";
+import Header from "./pages/Header";
+import NavbarHome from "./pages/NavbarHome";
 
 
 function App() {
@@ -69,7 +71,8 @@ function App() {
         <div className="App">
            <ToastContainer position="top-center"/>
            {/* <h1>Hello react</h1> */}
-           {/* <Navbarmecb/> */}
+           <Header/>
+           {/* <NavbarHome/> */}
            <Routes>
            
               <Route path="/" element={<Login />} />
@@ -79,9 +82,9 @@ function App() {
               <Route path="/view/:id" Component={View} />
               <Route path="/update/:id" Component={Updatedata} />
               <Route path="/search/:id" Component={Search} />
-              <Route path="/data/3phase" Component={ThreePhase} />
+              {/* <Route path="/data/3phase" Component={ThreePhase} />
               <Route path="/data/1phase" Component={OnePhase} />
-              <Route path="/data/ht" Component={Ht} />
+              <Route path="/data/ht" Component={Ht} /> */}
               <Route path="/data/piechart" Component={PieChart} />
            </Routes>
            

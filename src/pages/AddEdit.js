@@ -14,6 +14,7 @@ import { MeterModal } from "../Component/MeterModal";
 import { CurrentVoltTable } from "../Component/CurrentVoltTable";
 import { CurrentVoltModal } from "../Component/CurrentVoltModal";
 import { Button } from '../styles/Button';
+import { useApi } from './ApiContext';
 
 import { GlobalStyle } from '../Component/GlobalStyle';
 import Other from '../Component/Other';
@@ -81,7 +82,6 @@ const initialState={
   whetherMeterServiceKeptUnderObservation  :"",
   cap_adequate  :"",
   irregularitiesObserved  :"",
-  inspect_serv  :"",
   under_obser  :"",
   remed_action  :"",
   instruct_consum  :"",
@@ -102,6 +102,7 @@ const initialState={
 export default function AddEdit() {
     // Select Values
 const [meterin, setMeterIn] = useState('');
+const baseUrl = useApi();
 
 const handleChangeYN = (event) => {
   setMeterIn(event.target.value);
@@ -141,7 +142,7 @@ const [dateTime, setDateTime] = useState(new Date());
       onMeterTerminalCover,onOpticalPort,ctBoxIfAny,other,capacitorInstalled,adequateOrNot,
       meterInstalledAt,meterInstalledAtEyesight,otherObservations,
       whetherMeterServiceKeptUnderObservation,cap_adequate,irregularitiesObserved,
-      inspect_serv,under_obser,remed_action,instruct_consum,instruct_bill,meter_ht,whether_meter_cub,meter_pt,external_pt,mf_as}=state;
+    under_obser,remed_action,instruct_consum,instruct_bill,meter_ht,whether_meter_cub,meter_pt,external_pt,mf_as}=state;
     const navigate=useNavigate();
     const meterTableRef = useRef();
     const currentVoltTableRef=useRef();
@@ -150,6 +151,15 @@ const [dateTime, setDateTime] = useState(new Date());
 
     const handleChange = (event) => {
       setSelectedFiles(event.target.files);
+    };
+
+    const [inspect, setInspect] = useState('');
+    const [showTextField, setShowTextField] = useState(false);
+ const handleChangeInspect = (event) => {
+        const selectedValue = event.target.value;
+    setInspect(event.target.value);
+    setShowTextField(selectedValue === 'u/o case');
+
     };
   
     const handleSubmit = async (event) => {
@@ -162,7 +172,7 @@ const [dateTime, setDateTime] = useState(new Date());
   
   
       try {
-        await axios.post('http://localhost:5000/api/upload', formData);
+        await axios.post(`${baseUrl}/api/upload`, formData);
         console.log('Images uploaded successfully!');
       } catch (error) {
         console.error(error);
@@ -184,7 +194,7 @@ const [dateTime, setDateTime] = useState(new Date());
     formData2.append('video', selectedFile);
 
     try {
-      await fetch('http://localhost:5000/api/upload', {
+      await fetch(`${baseUrl}/api/upload`, {
         method: 'POST',
         body: formData2,
       });
@@ -244,7 +254,7 @@ const [dateTime, setDateTime] = useState(new Date());
         //     toast.error("Please provide input fields");
         // } 
             axios
-            .post("http://localhost:5000/api/post",{
+            .post(`${baseUrl}/api/post`,{
                serialNumber,meterInstalled,dataS,dataP,dataQ,formType,
                flyingSquadUnit,theftDetectedBy,place,consumerNumber,
               buNumber,name,address,nameOfOwner,contactNumber,category,typeOfInstallation,
@@ -255,7 +265,7 @@ const [dateTime, setDateTime] = useState(new Date());
               onMeterTerminalCover,onOpticalPort,ctBoxIfAny,other,capacitorInstalled,
               adequateOrNot,meterInstalledAt,meterInstalledAtEyesight,otherObservations,
               whetherMeterServiceKeptUnderObservation,cap_adequate,irregularitiesObserved,
-      inspect_serv,under_obser,remed_action,instruct_consum,instruct_bill,Date,Time,meter_ht,whether_meter_cub,meter_pt,external_pt,mf_as})
+      inspect,under_obser,remed_action,instruct_consum,instruct_bill,Date,Time,meter_ht,whether_meter_cub,meter_pt,external_pt,mf_as})
               
                 // name,
                 // email,
@@ -311,7 +321,7 @@ const [dateTime, setDateTime] = useState(new Date());
                 whetherMeterServiceKeptUnderObservation  :"",
                 cap_adequate  :"",
                 irregularitiesObserved  :"",
-                inspect_serv  :"",
+                
                 under_obser  :"",
                 remed_action  :"",
                 instruct_consum  :"",
@@ -354,9 +364,27 @@ const [dateTime, setDateTime] = useState(new Date());
               <TextField label="Flying Squad Unit" placeholder="Enter Flying Squad Unit " name="flyingSquadUnit" onChange={handleInputChange}  varient="filled" fullWidth required />
             </Grid>
 
-            <Grid xs={4} sm={3} item>
+            {/* <Grid xs={4} sm={3} item>
               <TextField label="Form Type" placeholder="Enter Form Type" name="formType" onChange={handleInputChange}  varient="filled" fullWidth required />
-            </Grid>
+            </Grid> */}
+
+            <Grid xs={6} sm={4} item  >
+
+<FormControl fullWidth variant="outlined">
+    <InputLabel id="formType" varient="outlined" required >Form Type</InputLabel>
+    <Select
+        labelId="formType"
+        label="Form Type"
+        name="formType"
+        value={formType}
+        onChange={handleInputChange}
+    >
+        <MenuItem value="3phase">3phase</MenuItem>
+        <MenuItem value="1phase">1phase</MenuItem>
+        <MenuItem value="HT">HT</MenuItem>
+    </Select>
+</FormControl>
+</Grid>
 
             <Grid xs={4} sm={3} item>
               <TextField label="Theft Detected By" placeholder="Theft Detected By" name="theftDetectedBy" onChange={handleInputChange} varient="filled" fullWidth required />
@@ -639,9 +667,7 @@ const [dateTime, setDateTime] = useState(new Date());
            <TextField label="Whether Meter / Service kept under Observation?"  placeholder=""  name="whetherMeterServiceKeptUnderObservation" onChange={handleInputChange} varient="outlined" fullWidth required />
           </Grid>
 
-     <Grid  sm={4} item  >
-           <TextField label="If Yes, Justify"  placeholder=""  name="cap_adequate" onChange={handleInputChange} varient="outlined" fullWidth required />
-     </Grid>
+         
      </Grid>
             {/* <Inspection/> */}
             <Typography gutterBottom variant="h6" ></Typography>
@@ -649,14 +675,36 @@ const [dateTime, setDateTime] = useState(new Date());
                         <Grid xs={12}  item  >
                             <TextField label="Irrgularaties Observed" placeholder="Enter Observed Irregularities" multiline rows={5} name="irregularitiesObserved" onChange={handleInputChange} varient="outlined" fullWidth required />
                         </Grid>
+                        <Grid xs={6} sm={4} item  >
 
-                        <Grid xs={12} sm={6} item  >
-                            <TextField label="According to inspection service is liable to book" placeholder=""  name="inspect_serv" onChange={handleInputChange} varient="outlined" fullWidth required />
-                        </Grid>
+<FormControl fullWidth variant="outlined">
+    <InputLabel id="inspection-service-is-liable" varient="outlined" required >According to inspection service is liable to book</InputLabel>
+    <Select
+        labelId="inspection-service-is-liable"
+        label="According to inspection service is liable to book"
+        id="meterdata"
+        value={inspect}
+        onChange={handleChangeInspect}
+    >
+        <MenuItem value="u/s 135">U/s 135</MenuItem>
+        <MenuItem value="u/s 126">U/s 126</MenuItem>
+        <MenuItem value="nil">Nil</MenuItem>
+        <MenuItem value="other">Other</MenuItem>
+        <MenuItem value="u/o case">U/O Case</MenuItem>
+    </Select>
+</FormControl>
+</Grid>
 
-                        <Grid xs={12} sm={6} item  >
-                            <TextField label="If Under Observation" placeholder=""  name="under_obser" onChange={handleInputChange} varient="outlined" fullWidth required />
-                        </Grid>
+{showTextField && <Grid xs={12} sm={6} item  >
+<TextField label="If Under Observation" placeholder="" name="under_obser" varient="outlined" fullWidth />
+</Grid>}
+
+<Grid  sm={4} item  >
+<TextField label="If Yes, Justify"  placeholder=""  name="cap_adequate" onChange={handleInputChange} varient="outlined" fullWidth required />
+</Grid>
+              
+
+                        
 
                         <Grid xs={12} sm={6} item  >
                             <TextField label="Remedial action proposed" placeholder=""  name="remed_action" onChange={handleInputChange} varient="outlined" fullWidth required />

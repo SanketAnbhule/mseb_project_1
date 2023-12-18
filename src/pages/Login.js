@@ -4,15 +4,17 @@ import { Link} from 'react-router-dom';
 import './Login.css'; // Import the CSS file
 import { blue } from '@mui/material/colors';
 import { useNavigate } from 'react-router-dom';
+import { useApi } from './ApiContext';
 
 export default function Login  () {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const navigate = useNavigate();
+    const baseUrl = useApi();
     //axios.defaults.withCredentials=true;
     const handleLogin = async () => {
         try {
-            const response = await axios.post('http://localhost:5000/login', { email, password });
+            const response = await axios.post(`${baseUrl}/login`, { email, password });
             const { token } = response.data;
 
             // Save token in localStorage

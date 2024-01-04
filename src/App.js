@@ -63,6 +63,7 @@ import Ht from "./pages/Ht";
 import PieChart from "./pages/PieChart";
 import Header from "./pages/Header";
 import NavbarHome from "./pages/NavbarHome";
+import DailyReport from "./pages/DailyReport";
 
 
 function App() {
@@ -86,6 +87,7 @@ function App() {
               <Route path="/data/1phase" Component={OnePhase} />
               <Route path="/data/ht" Component={Ht} /> */}
               <Route path="/data/piechart" Component={PieChart} />
+              <Route path="/data/dailyreport" Component={DailyReport} />
            </Routes>
            
         </div>

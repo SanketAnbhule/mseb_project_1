@@ -24,6 +24,9 @@ export default function Home1() {
   const baseUrl = useApi();
   const [exportFormat, setExportFormat] = useState('');
   const [sortConfig, setSortConfig] = useState({ key: '', direction: '' });
+  const [timeRange, setTimeRange] = useState('');
+  const [startDate, setStartDate] = useState(''); // Add state for start date
+  const [endDate, setEndDate] = useState('');
 
   const loadData = async () => {
     const response = await axios.get(`${baseUrl}/api/get`);
@@ -47,6 +50,51 @@ export default function Home1() {
         (selectedFilter === '' || item.formType === selectedFilter) ||
         (selectedFilter === '' || item.inspect_serv === selectedFilter)
       );
+    });
+
+    setFilteredData(filteredResults);
+  };
+  const handleTimeRangeChange = (event) => {
+    const selectedTimeRange = event.target.value;
+    setTimeRange(selectedTimeRange);
+
+    // Filter the data based on the selected time range
+    const filteredResults = data.filter((item) => {
+      const currentDate = new Date();
+      const itemDate = new Date(item.Date);
+
+      // Customize this logic based on your requirements
+      switch (selectedTimeRange) {
+        case 'daily':
+          return itemDate.toDateString() === currentDate.toDateString();
+        case 'weekly':
+          const startOfWeek = new Date(currentDate);
+          startOfWeek.setDate(currentDate.getDate() - currentDate.getDay());
+          return itemDate >= startOfWeek;
+        case 'monthly':
+          return itemDate.getMonth() === currentDate.getMonth() &&
+            itemDate.getFullYear() === currentDate.getFullYear();
+        default:
+          return true; // Show all data for other cases
+      }
+    });
+
+    setFilteredData(filteredResults);
+  };
+
+  const handleDateFilter = () => {
+    // Filter the data based on the selected date range
+    const filteredResults = data.filter((item) => {
+      const itemDate = new Date(item.Date);
+      const startDateTime = startDate ? new Date(startDate) : null;
+      const endDateTime = endDate ? new Date(endDate) : null;
+
+      // Customize this logic based on your requirements
+      if (startDateTime && endDateTime) {
+        return itemDate >= startDateTime && itemDate <= endDateTime;
+      } else {
+        return true;
+      }
     });
 
     setFilteredData(filteredResults);
@@ -248,6 +296,40 @@ export default function Home1() {
           <MenuItem value="pdf">Export to PDF</MenuItem>
         </Select>
       </FormControl>
+      <FormControl>
+        <Select
+          value={timeRange}
+          onChange={handleTimeRangeChange}
+          displayEmpty
+          input={<Input />}
+        >
+          <MenuItem value="" disabled>
+            Time Range
+          </MenuItem>
+          <MenuItem value="daily">Daily</MenuItem>
+          <MenuItem value="weekly">Weekly</MenuItem>
+          <MenuItem value="monthly">Monthly</MenuItem>
+        </Select>
+      </FormControl>
+      <TextField
+        label="Start Date"
+        type="date"
+        value={startDate}
+        onChange={(e) => setStartDate(e.target.value)}
+        InputLabelProps={{
+          shrink: true,
+        }}
+      />
+      <TextField
+        label="End Date"
+        type="date"
+        value={endDate}
+        onChange={(e) => setEndDate(e.target.value)}
+        InputLabelProps={{
+          shrink: true,
+        }}
+      />
+      <button onClick={handleDateFilter}>Filter by Date</button>
 
 
 
@@ -329,7 +411,8 @@ export default function Home1() {
                 <td>{item.name}</td>
                 <td>{item.contactNumber}</td>
                 <td>{item.place}</td>
-                <td>{item.Date}</td>
+                <td>{new Date(item.Date).toLocaleDateString()}</td>
+
 
                 {/* <td>{item.owner_name}</td>
                          <td>{item.mob_num_owner}</td>

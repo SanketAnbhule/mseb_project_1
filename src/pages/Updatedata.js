@@ -429,6 +429,7 @@ const [state, setState] = useState({
       InputLabelProps={{ shrink: true }} 
       name="date"
       value={state.date}
+      
       onChange={handleInputChange}
 
       
